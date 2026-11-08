@@ -39,3 +39,40 @@ def agent_route(body: ChatIn):
         return agent.run(body.message)
     except Exception as e:
         raise HTTPException(status_code=502, detail=type(e).__name__)
+
+
+import memory
+
+
+class MemIn(BaseModel):
+    category: str
+    text: str
+
+
+class TextIn(BaseModel):
+    text: str
+
+
+@app.get("/memory")
+def memory_list():
+    return {"enabled": memory.is_enabled(), "items": memory.list_all()}
+
+
+@app.post("/memory")
+def memory_add(body: MemIn):
+    return memory.add(body.category, body.text)
+
+
+@app.put("/memory/{mid}")
+def memory_update(mid: int, body: TextIn):
+    return memory.update(mid, body.text)
+
+
+@app.delete("/memory/{mid}")
+def memory_delete(mid: int):
+    return memory.delete(mid)
+
+
+@app.post("/memory/enabled/{flag}")
+def memory_enabled(flag: bool):
+    return {"enabled": memory.set_enabled(flag)}
