@@ -28,3 +28,14 @@ def chat(body: ChatIn):
         return {"reply": gemini_brain.ask(body.message)}
     except Exception as e:
         raise HTTPException(status_code=502, detail=type(e).__name__)
+
+
+import agent
+
+
+@app.post("/agent")
+def agent_route(body: ChatIn):
+    try:
+        return agent.run(body.message)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=type(e).__name__)
